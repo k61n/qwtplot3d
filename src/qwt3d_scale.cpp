@@ -44,43 +44,43 @@ QString Scale::ticLabel(unsigned int idx) const
 			double new_value = majors_p[idx];
 
 			if(fabs(new_value) >= 1e18){
-				eng_suff = 'E';
+				eng_suff = "E";
 				new_value /= 1e18;
 			} else if(fabs(new_value) >= 1e15){
-				eng_suff = 'P';
+				eng_suff = "P";
 				new_value /= 1e15;
 			} else if(fabs(new_value) >= 1e12){
-				eng_suff = 'T';
+				eng_suff = "T";
 				new_value /= 1e12;
 			} else if(fabs(new_value) >= 1e9){
-				eng_suff = 'G';
+				eng_suff = "G";
 				new_value /= 1e9;
 			} else if(fabs(new_value) >= 1e6){
-				eng_suff = 'M';
+				eng_suff = "M";
 				new_value /= 1e6;
 			} else if(fabs(new_value) >= 1e3){
-				eng_suff = 'k';
+				eng_suff = "k";
 				new_value /= 1e3;
 			} else if(fabs(new_value) >= 1){
 				eng_suff = "";
 				new_value /= 1.0;
 			} else if(fabs(new_value) >= 1e-3){
-				eng_suff = 'm';
+				eng_suff = "m";
 				new_value /= 1e-3;
 			} else if(fabs(new_value) >= 1e-6){
-				eng_suff = '�';
+				eng_suff = "µ";
 				new_value /= 1e-6;
 			} else if(fabs(new_value) >= 1e-9){
-				eng_suff = 'n';
+				eng_suff = "n";
 				new_value /= 1e-9;
 			} else if(fabs(new_value) >= 1e-12){
-				eng_suff = 'p';
+				eng_suff = "p";
 				new_value /= 1e-12;
 			} else if(fabs(new_value) >= 1e-15){
-				eng_suff = 'f';
+				eng_suff = "f";
 				new_value /= 1e-15;
 			} else {
-				eng_suff = 'a';
+				eng_suff = "a";
 				new_value /= 1e-18;
 			}
 
