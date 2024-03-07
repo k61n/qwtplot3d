@@ -23,7 +23,7 @@ an empty QString else.
 QString Scale::ticLabel(unsigned int idx) const
 {
 	if (idx < 0 || idx >= majors_p.size())
-		return QString::null;
+		return {};
 
 	QLocale locale = QLocale();
 	switch (d_numeric_format){
@@ -68,7 +68,7 @@ QString Scale::ticLabel(unsigned int idx) const
 				eng_suff = 'm';
 				new_value /= 1e-3;
 			} else if(fabs(new_value) >= 1e-6){
-				eng_suff = 'µ';
+				eng_suff = 'ï¿½';
 				new_value /= 1e-6;
 			} else if(fabs(new_value) >= 1e-9){
 				eng_suff = 'n';
@@ -92,7 +92,7 @@ QString Scale::ticLabel(unsigned int idx) const
 		}
 		break;
 	}
-	return QString::null;
+	return {};
 }
 
 double Scale::ticValue(unsigned int idx) const
