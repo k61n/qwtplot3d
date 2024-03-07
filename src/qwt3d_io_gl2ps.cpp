@@ -6,7 +6,7 @@
 #include <locale.h>
 
 #include "qwt3d_openglhelper.h"
-#include "../3rdparty/gl2ps/gl2ps.h"
+#include "gl2ps.h"
 #include "qwt3d_io_gl2ps.h"
 #include "qwt3d_plot.h"
 

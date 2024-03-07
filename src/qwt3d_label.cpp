@@ -1,7 +1,7 @@
 #include <qbitmap.h>
 #include "qwt3d_label.h"
 #include "qwt3d_plot.h"
-#include "../3rdparty/gl2ps/gl2ps.h"
+#include "gl2ps.h"
 
 using namespace Qwt3D;
 
