@@ -28,13 +28,7 @@ static QDebug operator<<(QDebug dbg, const Triple& t)
 /*!
   This should be the first call in your derived classes constructor.
 */
-#if QT_VERSION < 0x040000
-Plot3D::Plot3D(QWidget* parent, const char* name)
-    : QGLWidget(parent, name)
-#else
-Plot3D::Plot3D(QWidget* parent, const QGLWidget* shareWidget)
-	: ExtGLWidget(parent, shareWidget) 
-#endif
+Plot3D::Plot3D(QWidget* parent, const QGLWidget* shareWidget) : ExtGLWidget(parent, shareWidget)
 {
 	d_exporting_vector = false;
 	renderpixmaprequest_ = false;

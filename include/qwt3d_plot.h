@@ -23,12 +23,7 @@ class QWT3D_EXPORT Plot3D : public ExtGLWidget
     Q_OBJECT
 
 public:
-	
-#if QT_VERSION < 0x040000
-	Plot3D( QWidget* parent = 0, const char* name = 0 );
-#else
-	Plot3D ( QWidget * parent = 0, const QGLWidget * shareWidget = 0 );
-#endif
+    Plot3D ( QWidget * parent = 0, const QGLWidget * shareWidget = 0 );
 	virtual ~Plot3D();
 
 	void setCurve(Qwt3D::Curve* c)				{ curve_p = c; }

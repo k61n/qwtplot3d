@@ -3,12 +3,9 @@
 #include "qwt3d_plot.h"
 #include "qwt3d_io_gl2ps.h"
 #include "qwt3d_io_reader.h"
-#if QT_VERSION < 0x040000
-#else
-  #include <QImageWriter>
-  #include <QMessageBox>
-  #include <QObject>
-#endif
+#include <QImageWriter>
+#include <QMessageBox>
+#include <QObject>
 
 namespace {
 	QString tr(const char* val)			{ return QObject::tr(val); }
@@ -269,32 +266,20 @@ bool PixmapWriter::operator()(Plot3D* plot, QString const& fname)
 
 bool PixmapWriter::operator()(QImage* image, QString const& fname)
 {
-#if QT_VERSION < 0x040000
-  QImageIO iio;
-  iio.setImage(*image);
-#else
-  QImageWriter iio;
-#endif
-  iio.setFormat(QWT3DLOCAL8BIT(fmt_));
-  iio.setQuality(quality_);
-  iio.setFileName(fname);
-#if QT_VERSION < 0x040000
-  return iio.write();
-#else
-  if (!iio.canWrite()) {
-	QMessageBox::critical(0, tr("Pixmap file Open error"),
-		tr("Could not open read only image file:<h4>%1</h4>Please check you have file/folder write access permissions").arg(fname));
-	return false;
-  }
-
-  bool status = iio.write(*image);
-
-  if (!status)
-	QMessageBox::critical(0, tr("Pixmap file Write error"),
-		tr("Could not write to image file:<h4>%1</h4>%2").arg(fname).arg(iio.errorString()));
-
-  return status;
-#endif
+    QImageWriter iio;
+    iio.setFormat(QWT3DLOCAL8BIT(fmt_));
+    iio.setQuality(quality_);
+    iio.setFileName(fname);
+    if (!iio.canWrite()) {
+    QMessageBox::critical(0, tr("Pixmap file Open error"),
+        tr("Could not open read only image file:<h4>%1</h4>Please check you have file/folder write access permissions").arg(fname));
+    return false;
+    }
+    bool status = iio.write(*image);
+    if (!status)
+        QMessageBox::critical(0, tr("Pixmap file Write error"),
+        tr("Could not write to image file:<h4>%1</h4>%2").arg(fname).arg(iio.errorString()));
+    return status;
 }
 
 //! Calls Qt's QImageIO::setQuality() function.
@@ -305,13 +290,8 @@ void PixmapWriter::setQuality(int val)
 
 void IO::setupHandler()
 {
-#if QT_VERSION < 0x040000
-  QStringList list = QImage::outputFormatList();
-  QStringList::Iterator it = list.begin();
-#else
   QList<QByteArray> list = QImageWriter::supportedImageFormats();
   QList<QByteArray>::Iterator it = list.begin();
-#endif
   PixmapWriter qtw;
   while( it != list.end() ) 
   {

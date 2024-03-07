@@ -38,12 +38,8 @@ void ExtGLWidget::mouseMoveEvent( QMouseEvent *e )
 		e->ignore();
 		return;
 	}
-	
-#if QT_VERSION < 0x040000
-	MouseState bstate = e->state();
-#else
+
 	MouseState bstate(e->buttons(),e->modifiers());
-#endif
 
 	QPoint diff = e->pos() - lastMouseMovePosition_;
 
@@ -134,11 +130,7 @@ void ExtGLWidget::wheelEvent( QWheelEvent *e )
 	double step =  accel * e->angleDelta().y() / WHEEL_DELTA ;
 	step = exp(step)-1;
 
-#if QT_VERSION < 0x040000
-	if ( e->state() & Qt::ShiftButton )
-#else
 	if ( e->modifiers() & Qt::ShiftModifier )
-#endif
 		setScale(xScale(),yScale(), max(0.0,zScale() + step));
 	else
 		setZoom(max(0.0,zoom() + step ));
@@ -198,12 +190,7 @@ void ExtGLWidget::keyPressEvent( QKeyEvent *e )
 		return;
 	}	
 
-#if QT_VERSION < 0x040000
-	int bstate = e->state() & Qt::KeyButtonMask; // filter kbd modifier only
-	KeyboardState keyseq = bstate + e->key();
-#else
 	KeyboardState keyseq(e->key(), e->modifiers());
-#endif
 
 	setRotationKeyboard(keyseq, kbd_rot_speed_);	
 	setScaleKeyboard(keyseq, kbd_scale_speed_);	
