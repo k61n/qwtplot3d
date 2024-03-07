@@ -131,7 +131,7 @@ void ExtGLWidget::wheelEvent( QWheelEvent *e )
 	if (!mouseEnabled())	return;
 
 	double accel = 0.05;
-	double step =  accel * e->delta() / WHEEL_DELTA ;
+	double step =  accel * e->angleDelta().y() / WHEEL_DELTA ;
 	step = exp(step)-1;
 
 #if QT_VERSION < 0x040000
