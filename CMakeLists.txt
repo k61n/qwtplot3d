@@ -77,6 +77,7 @@ set(HEADERS
     include/qwt3d_volumeplot.h
     3rdparty/gl2ps/gl2ps.h)
 
+add_definitions(-DGL_SILENCE_DEPRECATION=1)
 add_library(qwtplot3d ${SOURCES} ${HEADERS})
 target_include_directories(qwtplot3d PUBLIC ${Qt5Core_INCLUDE_DIRS} ${Qt5OpenGL_INCLUDE_DIRS} ${Qt5Widgets_INCLUDE_DIRS} ${OPENGL_INCLUDE_DIRS})
 target_link_libraries(qwtplot3d PUBLIC
