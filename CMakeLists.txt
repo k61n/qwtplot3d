@@ -1,4 +1,9 @@
 cmake_minimum_required(VERSION 3.10)
+
+if (${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.12")
+    cmake_policy(SET CMP0074 NEW)
+endif ()
+
 project(qwtplot3d)
 
 set(CMAKE_CXX_STANDARD 17)
@@ -8,7 +13,6 @@ set(CMAKE_AUTOUIC ON)
 
 find_package(Qt5 COMPONENTS Core OpenGL Widgets REQUIRED)
 find_package(OpenGL REQUIRED)
-find_package(PNG REQUIRED)
 
 include_directories(
     ${PROJECT_SOURCE_DIR}/include
@@ -83,8 +87,7 @@ endif ()
 add_library(qwtplot3d ${SOURCES} ${HEADERS})
 target_include_directories(qwtplot3d PUBLIC ${Qt5Core_INCLUDE_DIRS} ${Qt5OpenGL_INCLUDE_DIRS} ${Qt5Widgets_INCLUDE_DIRS} ${OPENGL_INCLUDE_DIRS})
 target_link_libraries(qwtplot3d PUBLIC
-    Qt5::Core Qt5::OpenGL Qt5::Widgets
-    OpenGL::GL OpenGL::GLU PNG::PNG)
+    Qt5::Core Qt5::OpenGL Qt5::Widgets OpenGL::GL OpenGL::GLU)
 
 include(GNUInstallDirs)
 install(TARGETS qwtplot3d
