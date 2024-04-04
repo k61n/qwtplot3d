@@ -3,8 +3,6 @@
 
 #include <time.h>
 
-#include <QtOpenGL/qgl.h>
-
 #include "qwt3d_types.h"
 #include "qwt3d_io.h"
 
