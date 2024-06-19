@@ -63,7 +63,8 @@ namespace
   
 		do {
 			if ((c = read_char (fp,skipcomments)) == EOF)	return (NULL);
-			if (c != '\n' && c != '\r')						line.append(c);
+            if (c != '\n' && c != '\r')
+                line.append(QString::number(c));
 		} while (c != '\n' && c != '\r');
     
 		return line;
