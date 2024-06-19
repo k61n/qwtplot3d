@@ -39,7 +39,7 @@ public:
 
     Qwt3D::Axis *axis(){return &axis_;};//! < Returns a pointer to the axis object.
     bool isAxisEnabled(){return showaxis_;}; //! Returns true if the legend scale is displayed.
-    void draw(); //!< Draws the object. You should not use this explicitly - the function is called by updateGL().
+    void draw(); //!< Draws the object. You should not use this explicitly - the function is called by update().
 
     void setRelPosition(Qwt3D::Tuple relMin, Qwt3D::Tuple relMax); //!< Sets the relative position of the legend inside widget
     void setOrientation(ORIENTATION, SCALEPOSITION); //!< Sets legend orientation and scale position

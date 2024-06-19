@@ -2,6 +2,7 @@
 #define qwt3d_extglwidget_h
 
 #include "qwt3d_types.h"
+#include <QOpenGLWidget>
 
 class QMouseEvent;
 class QWheelEvent;
@@ -10,17 +11,17 @@ class QKeyEvent;
 namespace Qwt3D
 {
   
-//! An enhanced QGLWidget
+//! An enhanced QOpenGLWidget
 /*!
   The class covers mouse/keyboard handling, lighting and basic transformations, like
   scaling, shifting and rotating objects.
 */
-class QWT3D_EXPORT ExtGLWidget : public QGLWidget
+class QWT3D_EXPORT ExtGLWidget : public QOpenGLWidget
 {
   Q_OBJECT
 
 public:
-	ExtGLWidget ( QWidget * parent = 0, const QGLWidget * shareWidget = 0 );
+	ExtGLWidget(QWidget * parent = 0);
 	virtual ~ExtGLWidget() {}
 
 	// transformations

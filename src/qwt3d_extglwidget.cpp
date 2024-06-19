@@ -17,8 +17,7 @@ using namespace Qwt3D;
 /*!
   This should be the first call in your derived classes constructors.  
 */
-ExtGLWidget::ExtGLWidget( QWidget * parent, const QGLWidget * shareWidget)
-:	QGLWidget(parent, shareWidget) 
+ExtGLWidget::ExtGLWidget(QWidget *parent) : QOpenGLWidget(parent)
 {
 	initializedGL_ = false;	
 	xRot_ = yRot_ = zRot_ = 0.0;		// default object rotation
@@ -74,7 +73,7 @@ void ExtGLWidget::setOrtho( bool val )
 {
 	if (val == ortho_)		return;
 	ortho_ = val;
-	updateGL();
+	update();
 	
 	emit projectionChanged(val);
 }

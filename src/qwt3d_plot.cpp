@@ -28,10 +28,9 @@ static QDebug operator<<(QDebug dbg, const Triple& t)
 /*!
   This should be the first call in your derived classes constructor.
 */
-Plot3D::Plot3D(QWidget* parent, const QGLWidget* shareWidget) : ExtGLWidget(parent, shareWidget)
+Plot3D::Plot3D(QWidget* parent) : ExtGLWidget(parent)
 {
 	d_exporting_vector = false;
-	renderpixmaprequest_ = false;
 	doublelegend_ 		 = false;
 
 	displaylists_p = std::vector<GLuint>(DisplayListSize);
@@ -71,20 +70,8 @@ Plot3D::~Plot3D()
 void Plot3D::initializeGL()
 {
 	ExtGLWidget::initializeGL();
-	if (renderpixmaprequest_) {
-		renderpixmaprequest_ = false;
-	}
 }
 
-//! Reimplements QGLWidget::renderPixmap
-QPixmap Plot3D::renderPixmap(int w/* =0 */, int h/* =0 */, bool useContext/* =false */)
-{
-	renderpixmaprequest_ = true;
-	for (int i = 0; i != curvelist_p.size(); ++i)
-		curvelist_p[i]->queueUpdate();
-
-	return QGLWidget::renderPixmap(w, h, useContext);
-}
 
 /*!
   Paint the widgets content.
@@ -340,7 +327,7 @@ void Plot3D::calculateHull()
 void Plot3D::setCoordinateStyle(COORDSTYLE st)
 {
 	coordinates_p.setStyle(st);
-	updateGL();
+	update();
 }
 
 /*!
@@ -349,7 +336,7 @@ void Plot3D::setCoordinateStyle(COORDSTYLE st)
 void Plot3D::updateData(bool coord)
 {
 	update_coordinate_sys_ = coord;
-	updateGL();
+	update();
 }
 
 /*!

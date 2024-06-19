@@ -161,7 +161,7 @@ QImage Label::createImage(double angle)
 	p.drawText(0, 0, text_);
 	p.end();
 
-	return QGLWidget::convertToGLFormat(pm_.toImage());
+	return pm_.toImage().convertToFormat(QImage::Format_RGBA8888);
 }
 
 /**
@@ -289,15 +289,8 @@ void Label::draw(double angle)
 			drawDevicePixels(tex_.width(), tex_.height(), GL_RGBA, GL_UNSIGNED_BYTE, tex_.bits());
 		}
 	} else {
-		if (!angle){
-			Triple start = World2ViewPort(beg_);
-			start = ViewPort2World(start + Triple(0, QFontMetrics(font_).descent(), 0));
-			plot()->qglColor(GL2Qt(color.r, color.g, color.b));
-			plot()->renderText(start.x, start.y, start.z, text_, font_);
-		} else {
-			QImage tex_ = createImage(angle);
-			drawDevicePixels(tex_.width(), tex_.height(), GL_RGBA, GL_UNSIGNED_BYTE, tex_.bits());
-		}
+        QImage tex_ = createImage(angle);
+        drawDevicePixels(tex_.width(), tex_.height(), GL_RGBA, GL_UNSIGNED_BYTE, tex_.bits());
 	}
 
 	glAlphaFunc(func,v);

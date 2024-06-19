@@ -23,7 +23,7 @@ class QWT3D_EXPORT Plot3D : public ExtGLWidget
     Q_OBJECT
 
 public:
-    Plot3D ( QWidget * parent = 0, const QGLWidget * shareWidget = 0 );
+    Plot3D (QWidget * parent = 0);
 	virtual ~Plot3D();
 
 	void setCurve(Qwt3D::Curve* c)				{ curve_p = c; }
@@ -31,8 +31,7 @@ public:
 	Qwt3D::Curve* curve() const					{ return curve_p; }
 	Qwt3D::Label* title() const					{ return title_p; }
 	void manageConnect(bool connect, Qwt3D::Curve* curve = 0);
-	
-	QPixmap renderPixmap (int w = 0, int h = 0, bool useContext = false);	  
+
 	void createCoordinateSystem(Qwt3D::Triple beg, Qwt3D::Triple end);
 	
 	Qwt3D::CoordinateSystem* coordinates()		{ return &coordinates_p; }	//!< Returns pointer to CoordinateSystem object
@@ -176,7 +175,7 @@ private:
 	Qwt3D::RGBA		meshcolor_;
 	double			meshLineWidth_;
 	Qwt3D::RGBA		bgcolor_;
-	bool			renderpixmaprequest_;
+//	bool			renderpixmaprequest_;
 	bool			doublelegend_;
 	bool			d_exporting_vector;
 	GLint			gl2ps_export_format_;

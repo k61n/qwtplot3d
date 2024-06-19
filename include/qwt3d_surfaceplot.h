@@ -15,7 +15,7 @@ class QWT3D_EXPORT SurfacePlot : public Plot3D
     Q_OBJECT
 
 public:
-    SurfacePlot( QWidget* parent = 0, const QGLWidget* shareWidget = 0 );
+    SurfacePlot( QWidget* parent = 0);
     ~SurfacePlot();
 	void updateNormals(); //!< Recalculates surface normals;
 	int	resolution() const {return resolution_p;} //!< Returns data resolution (1 means all data)

@@ -24,7 +24,7 @@ void ExtGLWidget::setRotation( double xVal, double yVal, double zVal )
 	yRot_ = yVal;
 	zRot_ = zVal;
 
-	updateGL();
+	this->update();
 	emit rotationChanged(xVal, yVal, zVal);
 }
 
@@ -43,7 +43,7 @@ void ExtGLWidget::setShift( double xVal, double yVal, double zVal )
 	yShift_ = yVal;
 	zShift_ = zVal;
 
-	updateGL();
+	update();
 	emit shiftChanged(xVal, yVal, zVal);
 }
 
@@ -64,7 +64,7 @@ void ExtGLWidget::setViewportShift( double xVal, double yVal )
 	xVPShift_ = xVal;
 	yVPShift_ = yVal;
 	
-	updateGL();
+	update();
 	emit vieportShiftChanged(xVPShift_, yVPShift_);
 }
 
@@ -84,7 +84,7 @@ void ExtGLWidget::setScale( double xVal, double yVal, double zVal )
 	yScale_ = (yVal < DBL_EPSILON ) ? DBL_EPSILON : yVal;
 	zScale_ = (zVal < DBL_EPSILON ) ? DBL_EPSILON : zVal;
 
-	updateGL();
+	update();
 	emit scaleChanged(xVal, yVal, zVal);
 }
 
@@ -97,6 +97,6 @@ void ExtGLWidget::setZoom( double val )
 	if (zoom_ == val)	return;
 
 	zoom_ = (val < DBL_EPSILON ) ? DBL_EPSILON : val;
-	updateGL();
+	update();
 	emit zoomChanged(val);
 }
