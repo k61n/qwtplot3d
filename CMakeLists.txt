@@ -11,8 +11,26 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 
-find_package(Qt5 COMPONENTS Core OpenGL Widgets REQUIRED)
 find_package(OpenGL REQUIRED)
+
+if (${PREFER_QT})
+    if (${PREFER_QT} EQUAL 6)
+        find_package(Qt6 COMPONENTS Core OpenGLWidgets Widgets REQUIRED)
+        set(V 6)
+    elseif (${PREFER_QT} EQUAL 5)
+        find_package(Qt5 COMPONENTS Core OpenGL Widgets REQUIRED)
+        set(V 5)
+    endif ()
+else ()
+    find_package(Qt6 COMPONENTS Core OpenGLWidgets Widgets QUIET)
+    if (${Qt6_FOUND})
+        set(V 6)
+    else ()
+        find_package(Qt5 COMPONENTS Core OpenGL Widgets REQUIRED)
+        set(V 5)
+    endif ()
+endif ()
+message("-- Found Qt${V}")
 
 include_directories(
     ${PROJECT_SOURCE_DIR}/include
@@ -87,7 +105,12 @@ endif ()
 add_library(qwtplot3d ${SOURCES} ${HEADERS})
 target_include_directories(qwtplot3d PUBLIC ${Qt5Core_INCLUDE_DIRS} ${Qt5OpenGL_INCLUDE_DIRS} ${Qt5Widgets_INCLUDE_DIRS} ${OPENGL_INCLUDE_DIRS})
 target_link_libraries(qwtplot3d PUBLIC
-    Qt5::Core Qt5::OpenGL Qt5::Widgets OpenGL::GL OpenGL::GLU)
+    Qt${V}::Core Qt${V}::Widgets OpenGL::GLU)
+if (V EQUAL 6)
+    target_link_libraries(qwtplot3d PUBLIC Qt6::OpenGLWidgets)
+else ()
+    target_link_libraries(qwtplot3d PUBLIC Qt${V}::OpenGL)
+endif ()
 
 include(GNUInstallDirs)
 install(TARGETS qwtplot3d
