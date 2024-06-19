@@ -85,7 +85,7 @@ QString Scale::ticLabel(unsigned int idx) const
 			}
 
 			QString txt = locale.toString((new_value), 'f', d_numeric_precision);
-			if(txt.contains(QRegExp("^0[\\.,]?0*$")))
+            if(txt.contains(QRegularExpression("^0[\\.,]?0*$")))
 				return "0";
 
 			return txt + eng_suff;
