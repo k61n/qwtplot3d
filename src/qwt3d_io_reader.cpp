@@ -106,7 +106,8 @@ namespace
 	{
 		Q_UNUSED(val);
 		
-		if ((IO::title = read_line (fp,false)) == 0)	return false;
+        if ((IO::title = read_line (fp,false)) == QString())
+            return false;
 
 		return true;
 	}
