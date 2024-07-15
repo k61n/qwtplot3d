@@ -286,10 +286,12 @@ void Label::draw(double angle)
 			drawDeviceText(QWT3DLOCAL8BIT(text_), fontname(), font_.pointSize(), pos_, color, anchor_, gap_, angle);
 		else {
 			QImage tex_ = createImage(angle);
+            tex_ = tex_.mirrored(false, true);
 			drawDevicePixels(tex_.width(), tex_.height(), GL_RGBA, GL_UNSIGNED_BYTE, tex_.bits());
 		}
 	} else {
         QImage tex_ = createImage(angle);
+        tex_ = tex_.mirrored(false, true);
         drawDevicePixels(tex_.width(), tex_.height(), GL_RGBA, GL_UNSIGNED_BYTE, tex_.bits());
 	}
 
