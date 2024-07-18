@@ -4,7 +4,13 @@
 #ifdef __APPLE__
 #include <OpenGL/glu.h>
 #else
+#ifdef Q_OS_WIN
+#include <windows.h>
+#include <GL/gl.h>
 #include <GL/glu.h>
+#else
+#include <GL/glu.h>
+#endif
 #endif
 
 namespace Qwt3D
