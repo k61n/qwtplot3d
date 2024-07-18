@@ -41,7 +41,7 @@ macos-qt6-arm64:
       -DPREFER_QT=6
     - /opt/homebrew/bin/cmake --build . --parallel $(sysctl -n hw.ncpu)
 
-win-x64:
+win-qt5-x64:
   stage: build
   tags:
     - win, x64
@@ -53,4 +53,18 @@ win-x64:
       -DCMAKE_C_COMPILER="C:/Qt/Tools/mingw810_64/bin/gcc.exe"
       -DCMAKE_CXX_COMPILER="C:/Qt/Tools/mingw810_64/bin/g++.exe"
       -DCMAKE_PREFIX_PATH="C:/Qt/5.15.2/mingw81_64"
+    - cmake.exe --build . --parallel $env:NUMBER_OF_PROCESSORS
+
+win-qt6-x64:
+  stage: build
+  tags:
+    - win, x64
+  script:
+    - mkdir build
+    - cd build
+    - cmake.exe .. -G "Unix Makefiles"
+      -DCMAKE_MAKE_PROGRAM="C:/Qt/Tools/mingw1120_64/bin/mingw32-make.exe"
+      -DCMAKE_C_COMPILER="C:/Qt/Tools/mingw1120_64/bin/gcc.exe"
+      -DCMAKE_CXX_COMPILER="C:/Qt/Tools/mingw1120_64/bin/g++.exe"
+      -DCMAKE_PREFIX_PATH="C:/Qt/6.7.2/mingw_64"
     - cmake.exe --build . --parallel $env:NUMBER_OF_PROCESSORS
