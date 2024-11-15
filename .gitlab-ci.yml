@@ -7,7 +7,7 @@ ubuntu20.04:
   script:
     - mkdir build && cd build
     - cmake .. -DCMAKE_BUILD_TYPE=Release
-    - cmake --build .
+    - cmake --build . --parallel $CI_NPROC
 
 ubuntu24.04:
   stage: build
@@ -17,7 +17,7 @@ ubuntu24.04:
   script:
     - mkdir build && cd build
     - cmake .. -DCMAKE_BUILD_TYPE=Release
-    - cmake --build .
+    - cmake --build . --parallel $CI_NPROC
 
 macos-qt5-arm64:
   stage: build
