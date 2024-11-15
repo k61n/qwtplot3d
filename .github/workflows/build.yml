@@ -29,14 +29,14 @@ jobs:
         shell: bash
         run: |
           mkdir build && cd build
-          cmake ..
+          cmake .. -DBUILD_SHARED_LIBS=ON
           cmake --build . --parallel $(nproc)
 
   windows:
     name: windows
     runs-on: windows-latest
     steps:
-      - name: Install Qt
+      - name: deps
         uses: jurplel/install-qt-action@v4
         with:
           version:      6.8.0
@@ -45,12 +45,12 @@ jobs:
           arch:         win64_mingw
           setup-python: false
       - uses: actions/checkout@v4
-      - name: Run cmake
+      - name: cmake
         shell: pwsh
         run: |
           mkdir build
           cd build
-          cmake.exe -G "MinGW Makefiles" ..
+          cmake.exe .. -G "MinGW Makefiles" -DBUILD_SHARED_LIBS=ON
           cmake.exe --build . --parallel $env:NUMBER_OF_PROCESSORS
 
   macos:
@@ -58,7 +58,7 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Install Qt
+      - name: deps
         shell: bash
         run: |
           brew install qt
@@ -66,5 +66,5 @@ jobs:
         shell: bash
         run: |
           mkdir build && cd build
-          cmake ..
+          cmake .. -DBUILD_SHARED_LIBS=ON
           cmake --build . --parallel $(sysctl -n hw.ncpu)

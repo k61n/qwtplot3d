@@ -7,7 +7,7 @@ if (${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.12")
     cmake_policy(SET CMP0074 NEW)
 endif ()
 
-project(qwtplot3d)
+project(qwtplot3d VERSION 0.3.0)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -106,22 +106,39 @@ set(HEADERS
 if (APPLE)
     add_definitions(-DGL_SILENCE_DEPRECATION=1)
 endif ()
-add_library(qwtplot3d ${SOURCES} ${HEADERS})
-target_include_directories(qwtplot3d PUBLIC ${Qt5Core_INCLUDE_DIRS} ${Qt5OpenGL_INCLUDE_DIRS} ${Qt5Widgets_INCLUDE_DIRS} ${OPENGL_INCLUDE_DIRS})
-target_link_libraries(qwtplot3d PUBLIC
+
+add_library(qwtplot3d_static STATIC ${SOURCES} ${HEADERS})
+set_target_properties(qwtplot3d_static PROPERTIES
+    OUTPUT_NAME "qwtplot3d")
+target_link_libraries(qwtplot3d_static PUBLIC
     Qt${V}::Core Qt${V}::Widgets OpenGL::GLU)
 if (V EQUAL 6)
-    target_link_libraries(qwtplot3d PUBLIC Qt6::OpenGLWidgets)
+    target_link_libraries(qwtplot3d_static PUBLIC Qt6::OpenGLWidgets)
 else ()
-    target_link_libraries(qwtplot3d PUBLIC Qt${V}::OpenGL)
+    target_link_libraries(qwtplot3d_static PUBLIC Qt${V}::OpenGL)
+endif ()
+
+if (BUILD_SHARED_LIBS)
+    add_library(qwtplot3d_shared SHARED $<TARGET_OBJECTS:qwtplot3d_static>)
+    set_target_properties(qwtplot3d_shared PROPERTIES
+        VERSION ${qwtplot3d_VERSION}
+        SOVERSION ${qwtplot3d_VERSION_MAJOR}
+        OUTPUT_NAME "qwtplot3d")
+    target_link_libraries(qwtplot3d_shared PUBLIC
+        Qt${V}::Core Qt${V}::Widgets OpenGL::GLU)
+    if (V EQUAL 6)
+        target_link_libraries(qwtplot3d_shared PUBLIC Qt6::OpenGLWidgets)
+    else ()
+        target_link_libraries(qwtplot3d_shared PUBLIC Qt${V}::OpenGL)
+    endif ()
 endif ()
 
 include(GNUInstallDirs)
-install(TARGETS qwtplot3d
-    EXPORT qwtplot3dTargets
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+install(TARGETS qwtplot3d_static
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
+if (BUILD_SHARED_LIBS)
+    install(TARGETS qwtplot3d_shared
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
+endif ()
 install(FILES ${HEADERS}
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/qwtplot3d)
