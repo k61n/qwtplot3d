@@ -1,0 +1,70 @@
+name: Build
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  linux:
+    name: ubuntu
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-20.04, ubuntu-24.04]
+        include:
+          - os: ubuntu-20.04
+            deps: qtbase5-dev libqt5opengl5-dev
+          - os: ubuntu-24.04
+            deps: libglu1-mesa-dev qt6-base-dev libqt6opengl6-dev
+    steps:
+      - uses: actions/checkout@v4
+      - name: deps
+        shell: bash
+        run: |
+          sudo apt update
+          sudo apt install ${{ matrix.deps }} -y
+      - name: cmake
+        shell: bash
+        run: |
+          mkdir build && cd build
+          cmake ..
+          cmake --build . --parallel $(nproc)
+
+  windows:
+    name: windows
+    runs-on: windows-latest
+    steps:
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v4
+        with:
+          version:      6.8.0
+          host:         windows
+          target:       desktop
+          arch:         win64_mingw
+          setup-python: false
+      - uses: actions/checkout@v4
+      - name: Run cmake
+        shell: pwsh
+        run: |
+          mkdir build
+          cd build
+          cmake.exe -G "MinGW Makefiles" ..
+          cmake.exe --build . --parallel $env:NUMBER_OF_PROCESSORS
+
+  macos:
+    name: macos
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Qt
+        shell: bash
+        run: |
+          brew install qt
+      - name: cmake
+        shell: bash
+        run: |
+          mkdir build && cd build
+          cmake ..
+          cmake --build . --parallel $(sysctl -n hw.ncpu)
