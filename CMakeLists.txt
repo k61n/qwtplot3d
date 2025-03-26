@@ -15,6 +15,10 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 
 find_package(OpenGL REQUIRED)
+find_library(gl2ps_LIBRARY NAMES gl2ps
+    HINTS ${gl2ps_ROOT}/lib /usr/lib /usr/lib/aarch64-linux-gnu /usr/lib/x86_64-linux-gnu /usr/local/lib)
+include_directories(${gl2ps_ROOT}/include/)
+message(STATUS "Found gl2ps: ${gl2ps_LIBRARY}")
 
 if (${PREFER_QT})
     if (${PREFER_QT} EQUAL 6)
@@ -38,7 +42,6 @@ message(STATUS "Found Qt${V}Core: ${QT_LIB_PATH}")
 
 include_directories(
     ${PROJECT_SOURCE_DIR}/include
-    ${PROJECT_SOURCE_DIR}/3rdparty/gl2ps
     ${OPENGL_INCLUDE_DIRS})
 
 set(SOURCES
@@ -68,7 +71,7 @@ set(SOURCES
     src/qwt3d_scale.cpp
 #    src/qwt3d_surfaceplot.cpp
     src/qwt3d_types.cpp
-    3rdparty/gl2ps/gl2ps.c)
+)
 
 set(HEADERS
     include/qwt3d_autoptr.h
@@ -101,17 +104,22 @@ set(HEADERS
 #    include/qwt3d_surfaceplot.h
     include/qwt3d_types.h
     include/qwt3d_volumeplot.h
-    3rdparty/gl2ps/gl2ps.h)
+)
 
 if (APPLE)
     add_definitions(-DGL_SILENCE_DEPRECATION=1)
 endif ()
 
+add_definitions(-DQWT3D_MAKEDLL=1)
+
 add_library(qwtplot3d_static STATIC ${SOURCES} ${HEADERS})
-set_target_properties(qwtplot3d_static PROPERTIES
-    OUTPUT_NAME "qwtplot3d")
+if (MSVC AND BUILD_SHARED_LIBS)
+    set_target_properties(qwtplot3d_static PROPERTIES OUTPUT_NAME "qwtplot3d_static")
+else ()
+    set_target_properties(qwtplot3d_static PROPERTIES OUTPUT_NAME "qwtplot3d")
+endif ()
 target_link_libraries(qwtplot3d_static PUBLIC
-    Qt${V}::Core Qt${V}::Widgets OpenGL::GLU)
+    Qt${V}::Core Qt${V}::Widgets OpenGL::GLU ${gl2ps_LIBRARY})
 if (V EQUAL 6)
     target_link_libraries(qwtplot3d_static PUBLIC Qt6::OpenGLWidgets)
 else ()
@@ -120,12 +128,9 @@ endif ()
 
 if (BUILD_SHARED_LIBS)
     add_library(qwtplot3d_shared SHARED $<TARGET_OBJECTS:qwtplot3d_static>)
-    set_target_properties(qwtplot3d_shared PROPERTIES
-        VERSION ${qwtplot3d_VERSION}
-        SOVERSION ${qwtplot3d_VERSION_MAJOR}
-        OUTPUT_NAME "qwtplot3d")
+    set_target_properties(qwtplot3d_shared PROPERTIES OUTPUT_NAME "qwtplot3d")
     target_link_libraries(qwtplot3d_shared PUBLIC
-        Qt${V}::Core Qt${V}::Widgets OpenGL::GLU)
+        Qt${V}::Core Qt${V}::Widgets OpenGL::GLU ${gl2ps_LIBRARY})
     if (V EQUAL 6)
         target_link_libraries(qwtplot3d_shared PUBLIC Qt6::OpenGLWidgets)
     else ()

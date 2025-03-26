@@ -1,16 +1,18 @@
-#if defined(_MSC_VER) /* MSVC Compiler */
-#pragma warning ( disable : 4786 )
-#endif
 
 #include <time.h>
 #include <locale.h>
 
-#include "qwt3d_openglhelper.h"
-#include "gl2ps.h"
-#include "qwt3d_io_gl2ps.h"
-#include "qwt3d_plot.h"
+#if defined(_MSC_VER)
+#include <windows.h>
+#endif
+
+#include <gl2ps.h>
 
 #include <QFileInfo>
+
+#include "qwt3d_io_gl2ps.h"
+#include "qwt3d_openglhelper.h"
+#include "qwt3d_plot.h"
 
 using namespace Qwt3D;
 
