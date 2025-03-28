@@ -53,4 +53,5 @@ windows:
       @CMAKECONFIGARGS
       -Dgl2ps_ROOT="C:/qtisas_libs/$CMPLR/gl2ps"
       -DCMAKE_PREFIX_PATH="C:/Qt/$QT"
+      -DBUILD_SHARED_LIBS=ON
     - cmake --build . @CMAKEBUILDARGS $env:NUMBER_OF_PROCESSORS
