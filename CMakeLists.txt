@@ -110,7 +110,10 @@ if (APPLE)
     add_definitions(-DGL_SILENCE_DEPRECATION=1)
 endif ()
 
-add_definitions(-DQWT3D_MAKEDLL=1)
+if (MSVC)
+    add_definitions(-DQWT3D_MAKEDLL=1)
+    add_compile_options($<$<CXX_COMPILER_ID:MSVC>:/MP>)
+endif ()
 
 add_library(qwtplot3d_static STATIC ${SOURCES} ${HEADERS})
 if (MSVC AND BUILD_SHARED_LIBS)
