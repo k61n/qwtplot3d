@@ -31,27 +31,17 @@ windows:
   stage: build
   parallel:
     matrix:
-      - QT: 6.8.2/mingw_64
-        CMPLR: mingw1310_64
+      - CMPLR: msvc2022_64
         ARCH: x64
-        CMAKECONFIG: -GNinja -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ -DCMAKE_BUILD_TYPE=Release
-        CMAKEBUILD: --parallel
-      - QT: 6.8.2/msvc2022_arm64
-        CMPLR: msvc2022_arm64
+      - CMPLR: msvc2022_arm64
         ARCH: arm64
-        CMAKECONFIG: -DUNUSED=OFF
-        CMAKEBUILD: --config Release -j
   tags:
     - win, $ARCH
   script:
     - mkdir build
     - cd build
-    - $env:Path = "C:\Qt\Tools\$CMPLR\bin;" + $env:Path
-    - $CMAKECONFIGARGS = $CMAKECONFIG -split ' '
-    - $CMAKEBUILDARGS = $CMAKEBUILD -split ' '
     - cmake ..
-      @CMAKECONFIGARGS
       -Dgl2ps_ROOT="C:/qtisas_libs/$CMPLR/gl2ps"
-      -DCMAKE_PREFIX_PATH="C:/Qt/$QT"
+      -DCMAKE_PREFIX_PATH="C:/Qt/6.8.3/$CMPLR"
       -DBUILD_SHARED_LIBS=ON
-    - cmake --build . @CMAKEBUILDARGS $env:NUMBER_OF_PROCESSORS
+    - cmake --build . --config Release -j $env:NUMBER_OF_PROCESSORS
