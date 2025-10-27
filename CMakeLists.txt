@@ -143,12 +143,15 @@ if (BUILD_SHARED_LIBS)
         ${OPENGL_INCLUDE_DIRS})
 endif ()
 
-include(GNUInstallDirs)
-install(TARGETS qwtplot3d_static
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
-if (BUILD_SHARED_LIBS)
-    install(TARGETS qwtplot3d_shared
+# if this project is not configured as a subproject
+if (CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
+    include(GNUInstallDirs)
+    install(TARGETS qwtplot3d_static
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
+    if (BUILD_SHARED_LIBS)
+        install(TARGETS qwtplot3d_shared
+            LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
+    endif ()
+    install(FILES ${HEADERS}
+        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/qwtplot3d)
 endif ()
-install(FILES ${HEADERS}
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/qwtplot3d)
