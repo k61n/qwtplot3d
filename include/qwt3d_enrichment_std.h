@@ -111,6 +111,31 @@ private:
   Qwt3D::RGBA rgba_;
 };
 
+//! 3D bars (modified enrichment from QwtPlot3D)
+class QWT3D_EXPORT Bar : public VertexEnrichment
+{
+public:
+	Bar();
+	explicit Bar(double rad, bool lines = true, bool filled = true, bool smooth = true);
+
+	Enrichment *clone() const override
+	{
+		return new Bar(*this);
+	}
+
+	void configure(double rad, bool lines = true, bool filled = true, bool smooth = true);
+	void drawBegin() override;
+	void drawEnd() override;
+	void draw(Qwt3D::Triple const &) override;
+
+private:
+	double radius_{};
+	double diag_{};
+	bool d_smooth{};
+	bool d_draw_lines{};
+	bool d_filled_bars{};
+};
+
 } // ns
 
 #endif

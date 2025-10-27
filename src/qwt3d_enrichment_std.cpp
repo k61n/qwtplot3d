@@ -52,7 +52,7 @@ void CrossHair::drawEnd()
     glDisable(GL_LINE_SMOOTH);
 }
 
-void CrossHair::draw(Qwt3D::Triple const& pos)
+void CrossHair::draw(Triple const& pos)
 {
 	RGBA rgba = (*plot->dataColor())(pos);
 	glColor4d(rgba.r,rgba.g,rgba.b,rgba.a);
@@ -150,7 +150,7 @@ void Dot::drawEnd()
     glDisable(GL_POINT_SMOOTH);
 }
 
-void Dot::draw(Qwt3D::Triple const& pos)
+void Dot::draw(Triple const& pos)
 {
 	RGBA rgba = (*plot->dataColor())(pos);
   glColor4d(rgba.r,rgba.g,rgba.b,rgba.a);
@@ -201,7 +201,7 @@ void Cone::configure(double rad, unsigned quality)
 	gluQuadricOrientation(disk,GLU_OUTSIDE);
 }
 
-void Cone::draw(Qwt3D::Triple const& pos)
+void Cone::draw(Triple const& pos)
 {  
 	RGBA rgba = (*plot->dataColor())(pos);
   glColor4d(rgba.r,rgba.g,rgba.b,rgba.a);
@@ -276,7 +276,7 @@ void Arrow::configure(int segs, double relconelength, double relconerad, double 
 	rel_stem_radius = relstemrad;	
 }
 
-void Arrow::draw(Qwt3D::Triple const& pos)
+void Arrow::draw(Triple const& pos)
 {	
 	Triple end = top_;
 	Triple beg = pos;
@@ -341,5 +341,117 @@ double Arrow::calcRotation(Triple& axis, FreeVector const& vec)
 	axis = normalizedcross(first,second);
 	double cosphi = dotProduct(first,second);
 	
-	return 180 * acos(cosphi) / Qwt3D::PI;
+	return 180 * acos(cosphi) / PI;
+}
+
+/////////////////////////////////////////////////////////////////
+//
+//  3D Bars  (modified enrichment example from QwtPlot3D archive)
+//
+/////////////////////////////////////////////////////////////////
+
+Bar::Bar()
+{
+  configure(0);
+}
+
+Bar::Bar(double rad, bool lines, bool filled, bool smooth)
+{
+  configure(rad, lines, filled, smooth);
+}
+
+void Bar::configure(double rad, bool lines, bool filled, bool smooth)
+{
+    plot = nullptr;
+  radius_ = rad;
+  d_smooth = smooth;
+  d_draw_lines = lines;
+  d_filled_bars = filled;
+}
+
+void Bar::drawBegin()
+{
+  diag_ = (plot->hull().maxVertex-plot->hull().minVertex).length() * radius_;
+    glLineWidth(static_cast<float>(plot->meshLineWidth()));
+  glEnable(GL_POLYGON_OFFSET_FILL);
+  if (d_smooth)
+    glEnable(GL_LINE_SMOOTH);
+  else
+    glDisable(GL_LINE_SMOOTH);
+
+  glPolygonOffset(1, 1);
+}
+
+void Bar::drawEnd()
+{
+}
+
+void Bar::draw(Triple const& pos)
+{
+    GLdouble minz = plot->hull().minVertex.z;
+
+	double xl = pos.x - diag_;
+	double xr = pos.x + diag_;
+	double yl = pos.y - diag_;
+	double yr = pos.y + diag_;
+
+    if (d_filled_bars){
+        RGBA rgbat = (*plot->dataColor())(pos);
+		glColor4d(rgbat.r,rgbat.g,rgbat.b,rgbat.a);
+						
+        glBegin(GL_QUADS);
+		glVertex3d(xl,yl,minz);
+		glVertex3d(xr,yl,minz);
+		glVertex3d(xr,yr,minz);
+		glVertex3d(xl,yr,minz);
+
+		glVertex3d(xl,yl,pos.z);
+		glVertex3d(xr,yl,pos.z);
+		glVertex3d(xr,yr,pos.z);
+		glVertex3d(xl,yr,pos.z);
+
+		glVertex3d(xl,yl,minz);
+		glVertex3d(xr,yl,minz);
+		glVertex3d(xr,yl,pos.z);
+		glVertex3d(xl,yl,pos.z);
+
+		glVertex3d(xl,yr,minz);
+		glVertex3d(xr,yr,minz);
+		glVertex3d(xr,yr,pos.z);
+		glVertex3d(xl,yr,pos.z);
+
+		glVertex3d(xl,yl,minz);
+		glVertex3d(xl,yr,minz);
+		glVertex3d(xl,yr,pos.z);
+		glVertex3d(xl,yl,pos.z);
+
+		glVertex3d(xr,yl,minz);
+		glVertex3d(xr,yr,minz);
+		glVertex3d(xr,yr,pos.z);
+		glVertex3d(xr,yl,pos.z);
+        glEnd();
+    }
+
+    if (!d_draw_lines)
+        return;
+
+	Qwt3D::RGBA meshCol = plot->meshColor();//using mesh color to draw the lines
+    glColor3d(meshCol.r, meshCol.g, meshCol.b);
+
+  glBegin(GL_LINES);
+	glVertex3d(xl,yl,minz); glVertex3d(xr,yl,minz);
+	glVertex3d(xl,yl,pos.z); glVertex3d(xr,yl,pos.z);
+	glVertex3d(xl,yr,pos.z); glVertex3d(xr,yr,pos.z);
+	glVertex3d(xl,yr,minz); glVertex3d(xr,yr,minz);
+
+	glVertex3d(xl,yl,minz); glVertex3d(xl,yr,minz);
+	glVertex3d(xr,yl,minz); glVertex3d(xr,yr,minz);
+	glVertex3d(xr,yl,pos.z); glVertex3d(xr,yr,pos.z);
+	glVertex3d(xl,yl,pos.z); glVertex3d(xl,yr,pos.z);
+
+	glVertex3d(xl,yl,minz); glVertex3d(xl,yl,pos.z);
+	glVertex3d(xr,yl,minz); glVertex3d(xr,yl,pos.z);
+	glVertex3d(xr,yr,minz); glVertex3d(xr,yr,pos.z);
+	glVertex3d(xl,yr,minz); glVertex3d(xl,yr,pos.z);
+  glEnd();
 }
