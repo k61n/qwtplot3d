@@ -5,7 +5,7 @@ linux:
   stage: build
   parallel:
     matrix:
-      - IMAGE: [debian11:0.0.5, noble:0.0.6]
+      - IMAGE: [debian11:6, ubuntu24.04:7]
   image: iffregistry.fz-juelich.de/qtisas/qtisas-ci/$IMAGE
   script:
     - mkdir build && cd build
@@ -42,6 +42,6 @@ windows:
     - cd build
     - cmake ..
       -Dgl2ps_ROOT="C:/qtisas_libs/$CMPLR/gl2ps"
-      -DCMAKE_PREFIX_PATH="C:/Qt/6.8.3/$CMPLR"
+      -DCMAKE_PREFIX_PATH="C:/Qt/6.10.0/$CMPLR"
       -DBUILD_SHARED_LIBS=ON
     - cmake --build . --config Release -j $env:NUMBER_OF_PROCESSORS
