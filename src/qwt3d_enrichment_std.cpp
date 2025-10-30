@@ -166,59 +166,50 @@ void Dot::draw(Triple const& pos)
 
 Cone::Cone()
 {
-	hat      = gluNewQuadric();
-	disk     = gluNewQuadric();
-
-  configure(0, 3);
+    hat = gluNewQuadric();
+    disk = gluNewQuadric();
+    configure(0, 3);
 }
 
 Cone::Cone(double rad, unsigned quality)
 {
-	hat      = gluNewQuadric();
-	disk     = gluNewQuadric();
-
-  configure(rad, quality);
-}
-
-Cone::~Cone()
-{
-	gluDeleteQuadric(hat);
-	gluDeleteQuadric(disk);
+    hat      = gluNewQuadric();
+    disk     = gluNewQuadric();
+    configure(rad, quality);
 }
 
 void Cone::configure(double rad, unsigned quality)
 {
-  plot = 0;
-  radius_ = rad;
-  quality_ = quality;
-  oldstate_ = GL_FALSE;
+    plot = nullptr;
+    radius_ = rad;
+    quality_ = quality;
 
-	gluQuadricDrawStyle(hat,GLU_FILL);
-	gluQuadricNormals(hat,GLU_SMOOTH);
-	gluQuadricOrientation(hat,GLU_OUTSIDE);
-	gluQuadricDrawStyle(disk,GLU_FILL);
-	gluQuadricNormals(disk,GLU_SMOOTH);
-	gluQuadricOrientation(disk,GLU_OUTSIDE);
+    gluQuadricDrawStyle(hat,GLU_FILL);
+    gluQuadricNormals(hat,GLU_SMOOTH);
+    gluQuadricOrientation(hat,GLU_OUTSIDE);
+    gluQuadricDrawStyle(disk,GLU_FILL);
+    gluQuadricNormals(disk,GLU_SMOOTH);
+    gluQuadricOrientation(disk,GLU_OUTSIDE);
 }
 
 void Cone::draw(Triple const& pos)
-{  
-	RGBA rgba = (*plot->dataColor())(pos);
-  glColor4d(rgba.r,rgba.g,rgba.b,rgba.a);
+{
+    RGBA rgba = (*plot->dataColor())(pos);
+    glColor4d(rgba.r,rgba.g,rgba.b,rgba.a);
 
-  GLint mode;
-	glGetIntegerv(GL_MATRIX_MODE, &mode);
-	glMatrixMode( GL_MODELVIEW );
-  glPushMatrix();
+    GLint mode;
+    glGetIntegerv(GL_MATRIX_MODE, &mode);
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
 
-  glTranslatef(pos.x, pos.y, pos.z);
+    glTranslatef(static_cast<float>(pos.x), static_cast<float>(pos.y), static_cast<float>(pos.z));
 
-  gluCylinder(hat, 0.0, radius_, radius_*2, quality_, 1);
-  glTranslatef(0, 0, radius_*2);
-	gluDisk(disk, 0.0, radius_, quality_, 1);
+    gluCylinder(hat, 0.0, radius_, radius_ * 2, static_cast<int>(quality_), 1);
+    glTranslatef(0, 0, static_cast<float>(radius_) * 2);
+    gluDisk(disk, 0.0, radius_, static_cast<int>(quality_), 1);
 
-  glPopMatrix();
-	glMatrixMode(mode);
+    glPopMatrix();
+    glMatrixMode(mode);
 }
 
 

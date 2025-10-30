@@ -121,11 +121,8 @@ Triple Drawable::relativePosition(Triple rel)
 void Drawable::draw()
 {
 	saveGLState();
-
-	for (std::list<Drawable*>::iterator it = dlist.begin(); it!=dlist.end(); ++it)
-	{
-		(*it)->draw();
-	}
+    for (auto&& drawable : dlist)
+        drawable->draw();
 	restoreGLState();
 }
 

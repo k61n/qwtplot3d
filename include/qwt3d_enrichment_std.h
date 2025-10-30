@@ -52,21 +52,22 @@ private:
 class QWT3D_EXPORT Cone : public VertexEnrichment
 {
 public:
-  Cone();
-  Cone(double rad, unsigned quality);
-  ~Cone();
+    Cone();
+    Cone(double rad, unsigned quality);
+    ~Cone() override = default;
 
-  Qwt3D::Enrichment* clone() const {return new Cone(*this);}
-  
-  void configure(double rad, unsigned quality);
-  void draw(Qwt3D::Triple const&);
+    [[nodiscard]] Qwt3D::Enrichment *clone() const override
+    {
+        return new Cone(*this);
+    }
+    void configure(double rad, unsigned quality);
+    void draw(Qwt3D::Triple const &) override;
 
 private:
-	GLUquadricObj *hat;
-	GLUquadricObj *disk;
-  unsigned quality_;
-  double radius_;
-  GLboolean oldstate_;
+    GLUquadricObj *hat;
+    GLUquadricObj *disk;
+    unsigned quality_{};
+    double radius_{};
 };
 
 //! 3D vector field. 
