@@ -111,15 +111,7 @@ QImage Label::createImage(double angle)
 	int textWidth = r.width();
 	int textHeight = r.height();
 
-	double aux_a = angle;
-	if (aux_a > 270)
-		aux_a -= 270;
-	if (aux_a >= 180)
-		aux_a -= 180;
-	if (aux_a > 90)
-		aux_a -= 90;
-
-	double rad = aux_a*M_PI/180.0;
+    double rad = std::fmod(angle, 90.0) * M_PI / 180.0;
 
 	int w = 0, h = 0;
 	if ((angle >= 0 && angle <= 90) || (angle >= 180 && angle <= 270)){
@@ -133,16 +125,18 @@ QImage Label::createImage(double angle)
 	width_ = w;
 	height_ = h;
 
-	QPixmap pm_ = QPixmap(w, h);
+    QImage img(w, h, QImage::Format_ARGB32_Premultiplied);
 
-	if (plot() && plot()->isExportingVector() && plot()->vectorExportFormat() != GL2PS_PDF){
-		Qwt3D::RGBA rgba = plot()->backgroundRGBAColor();
-		pm_.fill(GL2Qt(rgba.r, rgba.g, rgba.b));
-	} else
-		pm_.fill(Qt::transparent);
+    if (plot() && plot()->isExportingVector() && plot()->vectorExportFormat() != GL2PS_PDF)
+    {
+        RGBA rgba = plot()->backgroundRGBAColor();
+        img.fill(GL2Qt(rgba.r, rgba.g, rgba.b));
+    } else
+        img.fill(Qt::transparent);
 
-	QPainter p(&pm_);
-
+    QPainter p(&img);
+    p.translate(0, h);
+    p.scale(1, -1);
 	if (angle >= 270)
 		p.translate(textHeight*cos(rad), 0.0);
 	else if (angle >= 180)
@@ -161,7 +155,7 @@ QImage Label::createImage(double angle)
 	p.drawText(0, 0, text_);
 	p.end();
 
-	return pm_.toImage().convertToFormat(QImage::Format_RGBA8888);
+    return img.convertToFormat(QImage::Format_RGBA8888);
 }
 
 /**
@@ -255,9 +249,6 @@ const char * Label::fontname()
 
 void Label::draw(double angle)
 {
-	if (!plot() || !plot()->isVisible())
-		return;
-
 	if (text_.isEmpty())
 		return;
 
@@ -281,28 +272,8 @@ void Label::draw(double angle)
 	convert2screen();
 	glRasterPos3d(beg_.x, beg_.y, beg_.z);
 
-	if (plot()->isExportingVector()){
-		if (devicefonts_)
-			drawDeviceText(QWT3DLOCAL8BIT(text_), fontname(), font_.pointSize(), pos_, color, anchor_, gap_, angle);
-		else {
-			QImage tex_ = createImage(angle);
-#if QT_VERSION >= QT_VERSION_CHECK(6, 9, 0)
-            tex_ = tex_.flipped(Qt::Vertical);
-#else
-            tex_ = tex_.mirrored(false, true);
-#endif
-			drawDevicePixels(tex_.width(), tex_.height(), GL_RGBA, GL_UNSIGNED_BYTE, tex_.bits());
-		}
-	} else {
-		QImage tex_ = createImage(angle);
-#if QT_VERSION >= QT_VERSION_CHECK(6, 9, 0)
-		tex_ = tex_.flipped(Qt::Vertical);
-#else
-		tex_ = tex_.mirrored(false, true);
-#endif
-        drawDevicePixels(tex_.width(), tex_.height(), GL_RGBA, GL_UNSIGNED_BYTE, tex_.bits());
-	}
-
+    QImage tex_ = createImage(angle);
+    glDrawPixels(tex_.width(), tex_.height(), GL_RGBA, GL_UNSIGNED_BYTE, tex_.bits());
 	glAlphaFunc(func,v);
 	Enable(GL_ALPHA_TEST, b);
 }
