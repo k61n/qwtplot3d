@@ -24,13 +24,13 @@ void Axis::init()
 
 	scale_ = qwt3d_ptr<Scale>(new LinearScale);
 
-	beg_ = Triple(0.0, 0.0, 0.0);  
+	beg_ = Triple(0.0, 0.0, 0.0);
 	end_ = beg_;
-	
+
 	majorintervals_ = 0;
 	minorintervals_ = 0;
-	setMajors(1);	
-	setMinors(1);	
+	setMajors(1);
+	setMinors(1);
 	setLimits(0,0);
 
 	setTicOrientation(0.0, 0.0, 0.0);
@@ -55,6 +55,7 @@ void Axis::init()
 	labelgap_ = 0;
 
 	decorate_ = true;
+    isZ = false;
 }
 
 void Axis::setPosition(const Triple& beg, const Triple& end)
@@ -117,17 +118,14 @@ void Axis::draw()
 
 	saveGLState();
 
-//	GLStateBewarer sb(GL_LINE_SMOOTH, true);
-//	glBlendFunc(GL_ONE, GL_ZERO);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glColor4d(color.r,color.g,color.b,color.a);		
+    //  GLStateBewarer sb(GL_LINE_SMOOTH, true);
+    //  glBlendFunc(GL_ONE, GL_ZERO);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glColor4d(color.r,color.g,color.b,color.a);
 
-	drawBase();
-
-	if ( decorate_ ) {
-		drawTics();
-		drawLabel();	
-	}
+    drawBase();
+    drawTics();
+    drawLabel();
 
 	restoreGLState();
 }
@@ -140,14 +138,10 @@ void Axis::drawLabel()
 	if (!drawLabel_)
 		return;
 
-	label_.setPlot(plot());
-
-	double width = 0.0;
-	for (unsigned i = 0; i != markerLabel_.size(); i++){
-		double aux = markerLabel_[i].width();
-		if (aux > width)
-			width = aux;
-	}
+    double width = 0.0;
+    for (auto&& ml : markerLabel_)
+        if (ml.width() > width)
+            width = ml.width();
 
 	Triple center = begin() + (end_ - beg_)/2;
 	Triple ticEnd = ViewPort2World(World2ViewPort(center + ticOrientation() * lmaj_));
@@ -161,34 +155,25 @@ void Axis::drawLabel()
 	Triple beg = World2ViewPort(beg_);
 	double angle = 360 - fabs(QLineF(beg.x, beg.y, end.x, end.y).angle());
 
-	int ax = 0;
-	Qwt3D::CoordinateSystem *coords = plot()->coordinates();
-		for (int i = 0; i < (int)coords->axes.size(); i++){
-		Qwt3D::Axis axis = coords->axes[i];
-		if (axis.begin() == beg_ && axis.end() == end_){
-			ax = i;
-			break;
-		}
-	}
-
-	if (ax != Qwt3D::Z1 && ax != Qwt3D::Z2 && ax != Qwt3D::Z3 && ax != Qwt3D::Z4){
+    if (!isZ)
+    {
 		if (angle > 90 && angle < 180)
 			angle += 180;
 		if (angle > 180 && angle < 270)
 			angle -= 180;
-			}
+    }
 
 	label_.draw(angle);
 }
 
 void Axis::drawBase()
 {
-	setDeviceLineWidth( lineWidth_ );
-	glBegin( GL_LINES );
-		glVertex3d( beg_.x, beg_.y, beg_.z); 
-		glVertex3d( end_.x, end_.y, end_.z);
-	glEnd();
-}	
+    setLineWidth(lineWidth_);
+    glBegin(GL_LINES);
+    glVertex3d(beg_.x, beg_.y, beg_.z);
+    glVertex3d(end_.x, end_.y, end_.z);
+    glEnd();
+}
 
 bool Axis::prepTicCalculation(Triple& startpoint)
 {

@@ -96,6 +96,9 @@ public:
 	Qwt3D::Scale::NumericFormat numericFormat(){return scale_->numericFormat();};//!< Returns numeric format for tick labels
 	void setNumericFormat(const Qwt3D::Scale::NumericFormat& fmt, int prec){scale_->setNumericFormat(fmt, prec);};
 
+    // parameter to distinguish Z axes
+    bool isZ = false;
+
 private:
 
 	void init();

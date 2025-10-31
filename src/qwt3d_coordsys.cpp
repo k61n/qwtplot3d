@@ -7,6 +7,10 @@ CoordinateSystem::CoordinateSystem(Triple first, Triple second, COORDSTYLE st)
 {
 	autodecoration_ = true;
 	axes = std::vector<Axis>(12);
+    axes[Z1].isZ = true;
+    axes[Z2].isZ = true;
+    axes[Z3].isZ = true;
+    axes[Z4].isZ = true;
 	setStyle(st);
 	setLineSmooth(true);
 	init(first,second);
